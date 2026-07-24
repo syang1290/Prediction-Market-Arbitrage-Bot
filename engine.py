@@ -107,56 +107,36 @@ class ArbitrageEngine:
         else:
             print("There is no arbitrage opportunity")
 
-async def mock_kalshi_ws(manager: EventManager):
-    """Simulates a live Kalshi WebSocket feed."""
-    manager.initialize_event("KALSHI_ELECTION_YES", "Kalshi")
-    
-    # Initial state
-    manager.process_delta("KALSHI_ELECTION_YES", "SELL", 0.53, 500)
-    manager.process_delta("KALSHI_ELECTION_YES", "BID", 0.51, 300)
-    
-    while True:
-        await asyncio.sleep(2) # Send a price update every 2 seconds
-        # Randomly fluctuate the Kalshi Ask price to simulate market movement
-        new_sell = round(random.uniform(0.50, 0.55), 2)
-        manager.process_delta("KALSHI_ELECTION_YES", "SELL", new_sell, random.randint(100, 1000))
+    def intra_market_arbitrage(self, yes_token_id: str, no_token_id: str, platform: str, trade_quantity: float):
+        # Used for one marketplace (either Polymarket or Kalshi)
+        yes_event = self.manager.events.get(yes_token_id)
+        no_event = self.manager.events.get(no_token_id)
 
-async def mock_poly_ws(manager: EventManager):
-    """Simulates a live Polymarket WebSocket feed."""
-    manager.initialize_event("POLY_ELECTION_NO", "Polymarket")
-    
-    # Initial state
-    manager.process_delta("POLY_ELECTION_NO", "SELL", 0.49, 1000)
-    manager.process_delta("POLY_ELECTION_NO", "BID", 0.47, 800)
-    
-    while True:
-        await asyncio.sleep(1.5) # Send a price update every 1.5 seconds
-        # Randomly fluctuate the Poly Ask price
-        new_sell = round(random.uniform(0.45, 0.50), 2)
-        manager.process_delta("POLY_ELECTION_NO", "SELL", new_sell, random.randint(100, 1000))
+        if not yes_event or not no_event:
+            return
+        
+        yes_price = yes_event.best_sell()
+        no_price = no_event.best_sell()
 
-async def main():
-    print("Starting Prediction Market Arbitrage Engine...")
-    
-    manager = EventManager()
-    engine = ArbitrageEngine(manager, fee=0.005) # Example: 0.5% fee
-    
-    # Start the simulated WebSocket connections in the background
-    asyncio.create_task(mock_kalshi_ws(manager))
-    asyncio.create_task(mock_poly_ws(manager))
-    
-    # Give the WebSockets a moment to process the initial state
-    await asyncio.sleep(0.5)
-    
-    # Main evaluation loop
-    try:
-        for _ in range(10): # Run for 10 iterations for demonstration
-            engine.cross_market_arbitrage("KALSHI_ELECTION_YES", "POLY_ELECTION_NO", trade_quantity=100)
-            await asyncio.sleep(1) # Evaluate the market every second
-    except KeyboardInterrupt:
-        print("Engine stopped.")
+        if yes_price is None or no_price is None:
+            print(f"\n--- {platform} Intra-Market Scan ---")
+            print(f"Waiting for liquidity... YES Ask: {yes_price} | NO Ask: {no_price}")
+            return
+        
+        yes_cost = (yes_price * trade_quantity) * (1 + self.fee)
+        no_cost = (no_price * trade_quantity) * (1 + self.fee)
 
-if __name__ == "__main__":
-    asyncio.run(main())
-    
-    
+        total_cost = yes_cost + no_cost
+        payout = trade_quantity * 1.00
+        net_profit = payout - total_cost
+
+        print(f"\n--- {platform} Intra-Market Scan ---")
+        print(f"YES Ask: {yes_price} | NO Ask: {no_price}")
+        print(f"Total Cost (for both sides): ${total_cost:.4f}")
+
+        if net_profit > 0:
+            print(f"✅ Intra-Market Arbitrage Found! Profit: ${net_profit:.4f}")
+            print(f"   -> Buy {trade_quantity} YES at {yes_price}")
+            print(f"   -> Buy {trade_quantity} NO at {no_price}")
+        else:
+            print(f"❌ No arbitrage opportunity. Gap: ${net_profit:.4f}")
