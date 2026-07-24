@@ -119,8 +119,6 @@ class ArbitrageEngine:
         no_price = no_event.best_sell()
 
         if yes_price is None or no_price is None:
-            print(f"\n--- {platform} Intra-Market Scan ---")
-            print(f"Waiting for liquidity... YES Ask: {yes_price} | NO Ask: {no_price}")
             return
         
         yes_cost = (yes_price * trade_quantity) * (1 + self.fee)
@@ -130,13 +128,12 @@ class ArbitrageEngine:
         payout = trade_quantity * 1.00
         net_profit = payout - total_cost
 
-        print(f"\n--- {platform} Intra-Market Scan ---")
         print(f"YES Ask: {yes_price} | NO Ask: {no_price}")
-        print(f"Total Cost (for both sides): ${total_cost:.4f}")
+        print(f"Total Cost: ${total_cost:.4f}")
 
         if net_profit > 0:
-            print(f"✅ Intra-Market Arbitrage Found! Profit: ${net_profit:.4f}")
-            print(f"   -> Buy {trade_quantity} YES at {yes_price}")
-            print(f"   -> Buy {trade_quantity} NO at {no_price}")
+            print(f"Profit: ${net_profit:.4f}")
+            print(f"Buy {trade_quantity} YES at {yes_price}")
+            print(f"Buy {trade_quantity} NO at {no_price}")
         else:
-            print(f"❌ No arbitrage opportunity. Gap: ${net_profit:.4f}")
+            print(f"No arbitrage opportunity. Gap: ${net_profit:.4f}")

@@ -72,7 +72,6 @@ def get_live_token_id():
         response = requests.get(url).json()
         market = response[0]
         
-        # clobTokenIds is often returned as a stringified list or a regular list
         token_ids = market.get("clobTokenIds")
         if isinstance(token_ids, str):
             token_ids = json.loads(token_ids)
@@ -119,6 +118,7 @@ if __name__ == "__main__":
 """
 
 Right now the arbitrage bot project can monitor a single event every 5-10 seconds and check for updates if there are any arbitrage opportunities
-The next step is to make a detector such that it will be monitoring multiple (or all?) events on Polymarket such that if there is a single arbitrage opportunity available, it will print that out.
+The next step is to make a detector such that it will be monitoring multiple (or all?) events on Polymarket such that if there is a single arbitrage 
+opportunity available, it will print that out.
 
 """
