@@ -107,7 +107,7 @@ class ArbitrageEngine:
         else:
             print("There is no arbitrage opportunity")
 
-    def intra_market_arbitrage(self, yes_token_id: str, no_token_id: str, platform: str, trade_quantity: float):
+    def intra_market_arbitrage(self, yes_token_id: str, no_token_id: str, platform: str, trade_quantity: float, market_name: str = ""):
         # Used for one marketplace (either Polymarket or Kalshi)
         yes_event = self.manager.events.get(yes_token_id)
         no_event = self.manager.events.get(no_token_id)
@@ -128,12 +128,10 @@ class ArbitrageEngine:
         payout = trade_quantity * 1.00
         net_profit = payout - total_cost
 
-        print(f"YES Ask: {yes_price} | NO Ask: {no_price}")
-        print(f"Total Cost: ${total_cost:.4f}")
-
         if net_profit > 0:
-            print(f"Profit: ${net_profit:.4f}")
+            print(f"\n--- {platform} Arbitrage Found! ---")
+            print(f"Market: {market_name}")
+            print(f"YES Ask: {yes_price} | NO Ask: {no_price}")
+            print(f"Total Cost: ${total_cost:.4f} | Profit: ${net_profit:.4f}")
             print(f"Buy {trade_quantity} YES at {yes_price}")
             print(f"Buy {trade_quantity} NO at {no_price}")
-        else:
-            print(f"No arbitrage opportunity. Gap: ${net_profit:.4f}")
