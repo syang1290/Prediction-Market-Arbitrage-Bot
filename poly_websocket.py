@@ -117,7 +117,9 @@ def get_live_markets(limit: int = 15):
         print(f"Error fetching markets: {e}")
         return []
 
-async def main():
+# I combined kalshi and polymarket's websocket main functions into a singular main.py file
+
+""" async def main():
     print("Starting Live Polymarket Listener...")
     
     manager = EventManager()
@@ -149,7 +151,7 @@ async def main():
         print("Engine stopped.")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(main()) """
 
 """
 
