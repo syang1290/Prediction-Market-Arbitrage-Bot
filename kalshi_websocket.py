@@ -147,9 +147,7 @@ async def live_kalshi_ws(manager: EventManager, tickers: list):
     except Exception as e:
         print(f"Kalshi WS Error: {e}")
 
-# I combined kalshi and polymarket's websocket main functions into a singular main.py file
-
-""" async def main():
+async def main():
     print("Starting Live Kalshi Listener...")
     
     manager = EventManager()
@@ -182,4 +180,4 @@ async def live_kalshi_ws(manager: EventManager, tickers: list):
         print("Engine stopped.")
 
 if __name__ == "__main__":
-    asyncio.run(main()) """
+    asyncio.run(main())
