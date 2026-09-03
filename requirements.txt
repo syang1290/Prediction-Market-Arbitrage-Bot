@@ -1,0 +1,7 @@
+websockets
+requests
+cryptography
+python-dotenv
+fastapi
+uvicorn
+openai
