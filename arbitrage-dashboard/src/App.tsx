@@ -20,7 +20,8 @@ export default function App() {
   const [, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8000/ws');
+    const BACKEND_URL = 'https://prediction-market-arbitrage-bot-2k7x.onrender.com';
+    const ws = new WebSocket(BACKEND_URL);
 
     ws.onopen = () => setIsConnected(true);
     ws.onclose = () => setIsConnected(false);
