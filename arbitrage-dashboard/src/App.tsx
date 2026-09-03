@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ArbitrageOpportunity {
   type: string;
@@ -16,7 +16,7 @@ interface ArbitrageOpportunity {
 
 export default function App() {
   const [opportunities, setOpportunities] = useState<ArbitrageOpportunity[]>([]);
-  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8000/ws');
