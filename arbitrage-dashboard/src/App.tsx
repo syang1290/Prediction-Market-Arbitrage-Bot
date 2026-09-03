@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import './index.css';
 
 interface ArbitrageOpportunity {
   type: string;
@@ -33,16 +34,16 @@ export default function App() {
   }, []);
 
   return (
-    <div style={{ padding: '24px', fontFamily: 'system-ui, sans-serif', backgroundColor: '#0f172a', minHeight: '100vh', color: '#f8fafc' }}>
+    <div style={{ padding: '24px', fontFamily: 'var(--sans)', backgroundColor: '#0f172a', minHeight: '100vh', color: '#f8fafc' }}>
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0 }}>Prediction Market Arbitrage Scanner</h1>
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0, color: '#f8fafc' }}>Prediction Market Arbitrage Scanner</h1>
         </div>
       </header>
 
       <div style={{ backgroundColor: '#1e293b', borderRadius: '8px', overflow: 'hidden', border: '1px solid #334155' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' }}>
-          <thead style={{ backgroundColor: '#0f172a', color: '#cbd5e1', textTransform: 'uppercase', fontSize: '12px' }}>
+          <thead style={{ backgroundColor: '#0f172a', color: '#cbd5e1', fontSize: '14px' }}>
             <tr>
               <th style={{ padding: '12px 16px' }}>Event</th>
               <th style={{ padding: '12px 16px' }}>Strategy</th>
