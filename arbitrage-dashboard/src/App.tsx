@@ -20,15 +20,26 @@ export default function App() {
   const [, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
-    const BACKEND_URL = 'https://prediction-market-arbitrage-bot-2k7x.onrender.com';
+    const BACKEND_URL = 'wss://prediction-market-arbitrage-bot-2k7x.onrender.com/ws';
     const ws = new WebSocket(BACKEND_URL);
 
-    ws.onopen = () => setIsConnected(true);
+    ws.onopen = () => {
+      setIsConnected(true);
+      setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send('ping');
+        }
+      }, 30000);
+    };
+    
     ws.onclose = () => setIsConnected(false);
 
     ws.onmessage = (event) => {
       const data: ArbitrageOpportunity = JSON.parse(event.data);
-      setOpportunities((prev) => [data, ...prev.slice(0, 49)]); 
+      setOpportunities((prev) => {
+        const realOpps = prev.filter(opp => opp.type !== "EXAMPLE");
+        return [data, ...realOpps.slice(0, 49)];
+      });
     };
 
     return () => ws.close();
